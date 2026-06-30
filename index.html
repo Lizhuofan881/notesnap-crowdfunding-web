@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteSnap Pro - Carry Less, Remember More | Crowdfunding</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #D4AF37;
+            --accent-hover: #b5952f;
+            --bg-light: #f9f9f9;
+            --text-main: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background-color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Progress Bar */
+        .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent); z-index: 1001; transition: width 0.1s; }
+
+        /* Navigation */
+        nav { position: fixed; top: 0; width: 100%; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: #003366; }
+        .logo img { height: 40px; width: auto; }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-size: 0.9rem; font-weight: 500; transition: color 0.3s; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: var(--accent); }
+        .btn-back { background: var(--primary); color: var(--white); padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: transform 0.2s, background 0.3s; }
+        .btn-back:hover { background: var(--accent); transform: translateY(-2px); }
+
+        /* Hero Section */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 120px 20px 60px; position: relative; }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; color: var(--primary); animation: fadeUp 1s ease-out; }
+        .hero p { font-size: 1.2rem; color: var(--text-light); margin-bottom: 30px; animation: fadeUp 1s ease-out 0.2s both; }
+        .hero-buttons { display: flex; gap: 20px; margin-bottom: 40px; animation: fadeUp 1s ease-out 0.4s both; }
+        .btn-primary { background: var(--accent); color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1.1rem; transition: all 0.3s; border: none; cursor: pointer; }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        .btn-secondary { background: transparent; color: var(--primary); padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: 600; font-size: 1.1rem; border: 2px solid var(--primary); transition: all 0.3s; cursor: pointer; }
+        .btn-secondary:hover { background: var(--primary); color: white; }
+        .hero-img-container { width: 100%; max-width: 900px; animation: fadeUp 1s ease-out 0.6s both; }
+        .hero-img-container img { width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+
+        /* Video Section */
+        .video-section { background: var(--primary); padding: 80px 10%; text-align: center; }
+        .video-section h2 { color: white; font-size: 2.5rem; margin-bottom: 20px; }
+        .video-section p { color: #ccc; margin-bottom: 40px; font-size: 1.1rem; }
+        .video-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); background: #000; }
+        .video-container video { width: 100%; max-height: 600px; display: block; outline: none; }
+
+        /* Sections General */
+        section { padding: 100px 10%; }
+        .section-title { font-size: 2.5rem; margin-bottom: 20px; text-align: center; }
+        .section-subtitle { text-align: center; color: var(--text-light); margin-bottom: 60px; font-size: 1.1rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+        /* Problem Section */
+        .problem-section { background: var(--white); display: flex; flex-direction: column; align-items: center; }
+        .problem-content { display: flex; align-items: center; justify-content: center; gap: 60px; flex-wrap: wrap; width: 100%; max-width: 1000px; }
+        .problem-img { flex: 1; min-width: 300px; }
+        .problem-img img { width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .problem-points { flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 40px; }
+        .point { display: flex; align-items: center; gap: 20px; transition: transform 0.3s; cursor: pointer; }
+        .point:hover { transform: translateX(10px); }
+        .point-line { width: 60px; height: 2px; background: #ddd; position: relative; }
+        .point-line::after { content: ''; position: absolute; right: -6px; top: -5px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .point-text { font-size: 1.3rem; font-weight: 600; color: #444; }
+
+        /* Story Section */
+        .story-section { background: #0a0a0a; color: white; padding: 120px 10%; position: relative; overflow: hidden; }
+        .story-section::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%); border-radius: 50%; }
+        .story-content { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        .story-text { display: flex; flex-direction: column; gap: 30px; }
+        .story-label { display: inline-flex; align-items: center; gap: 10px; background: rgba(212, 175, 55, 0.15); color: var(--accent); padding: 8px 20px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; width: fit-content; border: 1px solid rgba(212, 175, 55, 0.3); }
+        .story-label::before { content: '✦'; font-size: 1rem; }
+        .story-text h2 { font-size: 3.2rem; font-weight: 800; line-height: 1.1; color: white; margin: 0; }
+        .story-text h2 span { color: var(--accent); display: block; }
+        .story-description { font-size: 1.15rem; line-height: 1.8; color: #b0b0b0; }
+        .story-description strong { color: white; font-weight: 600; }
+        .story-highlight { background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%); border-left: 4px solid var(--accent); padding: 25px 30px; border-radius: 0 12px 12px 0; margin: 10px 0; }
+        .story-highlight p { font-size: 1.1rem; color: #d0d0d0; line-height: 1.7; margin: 0; }
+        .story-quote { display: flex; align-items: center; gap: 20px; margin-top: 10px; }
+        .story-quote-text { font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+        .story-quote-text span { color: white; }
+        .story-quote-icon { width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; flex-shrink: 0; }
+        .story-visual { position: relative; display: flex; justify-content: center; align-items: center; }
+        .story-image-wrapper { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.5); transform: perspective(1000px) rotateY(-5deg); transition: transform 0.5s ease; }
+        .story-image-wrapper:hover { transform: perspective(1000px) rotateY(0deg); }
+        .story-image-wrapper img { width: 100%; max-width: 500px; display: block; border-radius: 20px; }
+        .story-image-badge { position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .story-image-badge p { margin: 0; font-size: 0.85rem; color: #aaa; }
+        .story-image-badge strong { color: white; font-size: 1.1rem; display: block; margin-top: 3px; }
+
+        /* Features Section */
+        .features-section { background: #ffffff; padding: 100px 5%; text-align: center; }
+        .features-main-img { max-width: 1000px; margin: 0 auto 60px; width: 100%; }
+        .features-main-img img { width: 100%; height: auto; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: #f9f9f9; border-radius: 20px; overflow: hidden; transition: transform 0.3s ease; text-align: left; }
+        .feature-card:hover { transform: translateY(-10px); }
+        .feature-img-box { height: 250px; background: #fff; display: flex; justify-content: center; align-items: center; padding: 20px; border-bottom: 1px solid #eee; }
+        .feature-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .feature-text { padding: 25px; }
+        .feature-text h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--primary); }
+        .feature-text p { font-size: 0.9rem; color: var(--text-light); }
+
+        /* Styles Section */
+        .styles-section { background: #f4f4f4; padding: 100px 5%; }
+        .styles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
+        .style-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: all 0.4s ease; display: flex; flex-direction: column; }
+        .style-card:hover { transform: translateY(-15px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .style-img-box { height: 300px; overflow: hidden; background: #eee; position: relative; }
+        .style-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .style-card:hover .style-img-box img { transform: scale(1.05); }
+        .style-tag { position: absolute; top: 20px; right: 20px; background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .style-tag.collab { background: var(--accent); color: var(--primary); }
+        .style-info { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .style-info h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
+        .style-info p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 20px; flex-grow: 1; }
+        .style-features { list-style: none; border-top: 1px solid #eee; padding-top: 15px; }
+        .style-features li { font-size: 0.85rem; color: #555; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .style-features li::before { content: '•'; color: var(--accent); font-weight: bold; }
+        .customization-banner { text-align: center; margin-top: 60px; padding: 40px; background: white; border-radius: 20px; border: 2px dashed var(--accent); max-width: 800px; margin-left: auto; margin-right: auto; }
+        .customization-banner h4 { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px; }
+        .customization-banner p { color: var(--text-light); }
+
+        /* Demo Section */
+        .demo-section { background: var(--bg-light); text-align: center; }
+        .demo-container { display: flex; justify-content: center; gap: 50px; align-items: center; flex-wrap: wrap; margin-top: 40px; }
+        .demo-real-img { flex: 1; min-width: 300px; max-width: 500px; }
+        .demo-real-img img { width: 100%; border-radius: 20px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); object-fit: contain; padding: 20px; }
+        .canvas-area { flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
+        .canvas-wrapper { background: var(--accent); padding: 15px; border-radius: 15px; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.4); margin-bottom: 20px; }
+        canvas { background: #e8c87a; border-radius: 10px; cursor: crosshair; touch-action: none; display: block; }
+        .btn-wipe { background: var(--primary); color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .btn-wipe:hover { background: #333; transform: scale(1.05); }
+
+        /* Market Data */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 50px; }
+        .stat-card { background: var(--bg-light); padding: 40px; border-radius: 20px; text-align: center; transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-10px); }
+        .stat-number { font-size: 3rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+
+        /* --- Rewards Section (4 Tiers) --- */
+        .rewards-section { background: var(--white); }
+        .reward-cards { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 30px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        .reward-card { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            border: 3px solid #eee; 
+            transition: all 0.3s; 
+            cursor: pointer; 
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+        }
+        .reward-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
+        }
+        .reward-card.selected { 
+            border-color: var(--accent); 
+            background: linear-gradient(135deg, #fffdf5 0%, #fff 100%); 
+        }
+        .reward-card.selected::before { 
+            content: '✓ SELECTED'; 
+            position: absolute; 
+            top: -15px; 
+            right: 20px; 
+            background: var(--accent); 
+            color: white; 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+        }
+        
+        /* Early Bird 特殊标签 */
+        .reward-badge {
+            position: absolute;
+            top: -12px;
+            left: 30px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .reward-tier { font-size: 0.9rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; margin-top: 10px; }
+        .reward-price { font-size: 2.5rem; font-weight: 700; margin-bottom: 5px; }
+        .reward-price-note { font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 20px; }
+        .reward-features { list-style: none; text-align: left; margin-bottom: 30px; flex-grow: 1; }
+        .reward-features li { margin-bottom: 10px; padding-left: 20px; position: relative; font-size: 0.95rem; }
+        .reward-features li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+        .btn-select { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+        .btn-select:hover { background: var(--accent); }
+
+        .shipping-note {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .shipping-note p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        .shipping-note strong {
+            color: var(--primary);
+        }
+
+        /* FAQ Section */
+        .faq-section { background: #f8f9fa; padding: 100px 10%; }
+        .faq-container { max-width: 900px; margin: 0 auto; }
+        .faq-item { background: white; margin-bottom: 20px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: box-shadow 0.3s ease; }
+        .faq-item:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .faq-question { padding: 28px 35px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.15rem; color: var(--primary); transition: background 0.3s; }
+        .faq-question:hover { background: #fafafa; }
+        .faq-icon { font-size: 1.8rem; font-weight: 300; transition: transform 0.3s ease; color: var(--primary); }
+        .faq-item.active .faq-icon { transform: rotate(45deg); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; padding: 0 35px; }
+        .faq-item.active .faq-answer { max-height: 300px; padding: 0 35px 28px 35px; }
+        .faq-answer p { color: var(--text-light); font-size: 1rem; line-height: 1.7; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; text-align: center; animation: modalPop 0.3s ease-out; }
+        @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-content h3 { font-size: 1.8rem; margin-bottom: 20px; color: var(--primary); }
+        .modal-content p { margin-bottom: 30px; color: var(--text-light); }
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; }
+        .btn-modal { padding: 12px 30px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+        .btn-confirm { background: var(--accent); color: white; }
+        .btn-confirm:hover { background: var(--accent-hover); }
+        .btn-cancel { background: #eee; color: var(--text-main); }
+        .btn-cancel:hover { background: #ddd; }
+
+        /* Footer */
+        footer { background: var(--primary); color: white; padding: 60px 10%; text-align: center; }
+        .footer-logo { font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
+        .contact-info { margin-top: 20px; color: #aaa; }
+        .contact-info a { color: var(--accent); text-decoration: none; }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .story-content { grid-template-columns: 1fr; gap: 50px; }
+            .story-text h2 { font-size: 2.2rem; }
+            .story-image-wrapper { transform: none; }
+            .nav-links { display: none; }
+            section { padding: 60px 5%; }
+            .problem-content { flex-direction: column; }
+            .faq-question { padding: 20px 25px; font-size: 1rem; }
+            .faq-answer { padding: 0 25px; }
+            .faq-item.active .faq-answer { padding: 0 25px 20px 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="logo.png" alt="Tri-Pen Alliance Logo">
+            Tri-Pen Alliance
+        </div>
+        <div class="nav-links">
+            <a href="#problem">Problem</a>
+            <a href="#video">Video</a>
+            <a href="#product">Product</a>
+            <a href="#features">Features</a>
+            <a href="#styles">Styles</a>
+            <a href="#demo">Demo</a>
+            <a href="#rewards">Rewards</a>
+        </div>
+        <a href="#rewards" class="btn-back">Back This Project</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>NoteSnap Pro</h1>
+        <p>Carry Less, Remember More.</p>
+        <div class="hero-buttons">
+            <a href="#rewards" class="btn-primary">Support Now</a>
+            <a href="#video" class="btn-secondary">Watch Video</a>
+        </div>
+        <div class="hero-img-container">
+            <img src="hero.png" alt="NoteSnap Pro Product">
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section id="video" class="video-section fade-in">
+        <h2>See NoteSnap Pro in Action</h2>
+        <p>Watch how NoteSnap Pro transforms your daily productivity</p>
+        <div class="video-container">
+            <video controls width="100%">
+                <source src="视频.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section id="problem" class="problem-section fade-in">
+        <h2 class="section-title">The Modern Carry Burden.</h2>
+        <p class="section-subtitle">We are carrying too much, yet remembering too little.</p>
+        <div class="problem-content">
+            <div class="problem-img">
+                <img src="problem.png" alt="The modern carry burden">
+            </div>
+            <div class="problem-points">
+                <div class="point"><div class="point-line"></div><div class="point-text">Heavy Notebooks</div></div>
+                <div class="point"><div class="point-line"></div><div class="point-text">Stuffed Wallets</div></div>
+                <div class="point"><div class="point-line"></div><div class="point-text">Lost Sticky Notes</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="product" class="story-section fade-in">
+        <div class="story-content">
+            <div class="story-text">
+                <div class="story-label">The Solution</div>
+                <h2>Distraction-Free <span>Productivity.</span></h2>
+                <div class="story-description">
+                    <p>Imagine sitting in your 8 AM lecture when a connection strikes you. Instead of fumbling for your phone and losing the thread to notifications...</p>
+                </div>
+                <div class="story-highlight">
+                    <p>You flip open <strong>NoteSnap Pro</strong>, write the thought in two seconds, and slip it back. <strong>No distraction. No forgotten idea. Just focus.</strong></p>
+                </div>
+                <div class="story-quote">
+                    <div class="story-quote-icon">∞</div>
+                    <div class="story-quote-text">1 NoteSnap <span>= ∞ Notes</span></div>
+                </div>
+            </div>
+            <div class="story-visual">
+                <div class="story-image-wrapper">
+                    <img src="usage.jpg" alt="NoteSnap Pro in use">
+                    <div class="story-image-badge">
+                        <p>Write. Wipe. Rewrite.</p>
+                        <strong>Infinite Possibilities</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section fade-in">
+        <h2 class="section-title">Seven Functions. &lt; 60 Grams.</h2>
+        <p class="section-subtitle">We packed 7 superpowers into one pocket-sized tool. No apps, no loading screens.</p>
+        
+        <div class="features-main-img">
+            <img src="functions.png" alt="NoteSnap Pro 7 Functions Exploded View">
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-img-box">
+                    <img src="stand.png" alt="Multi Angle Stand">
+                </div>
+                <div class="feature-text">
+                    <h3>MagSafe Phone Stand</h3>
+                    <p>Voted by 27.27% of users. Transform your phone into a multi-angle viewing station for videos or calls.</p>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-img-box">
+                    <img src="ruler.png" alt="Pocket Ruler">
+                </div>
+                <div class="feature-text">
+                    <h3>Pocket Ruler</h3>
+                    <p>Built-in precision ruler on the metal panel. Perfect for quick sketches or measuring on the go.</p>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-img-box">
+                    <img src="writing-hands.png" alt="Ergonomic Writing">
+                </div>
+                <div class="feature-text">
+                    <h3>Ergonomic Writing</h3>
+                    <p>Designed for two-handed stability. The metal surface provides the perfect friction for smooth writing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Styles Section -->
+    <section id="styles" class="styles-section fade-in">
+        <h2 class="section-title">Express Your Style.</h2>
+        <p class="section-subtitle">From exclusive athlete collaborations to cute daily companions. <br>Choose the NoteSnap that fits your vibe, or customize your own.</p>
+        
+        <div class="styles-grid">
+            <div class="style-card">
+                <div class="style-img-box">
+                    <span class="style-tag collab">Limited Edition</span>
+                    <img src="sinner.png" alt="Sinner Collaboration Edition">
+                </div>
+                <div class="style-info">
+                    <h3>The Champion's Choice</h3>
+                    <p>Inspired by Jannik Sinner. Sleek black leather with gold accents for the elite performer.</p>
+                    <ul class="style-features">
+                        <li>Premium Black & Gold Finish</li>
+                        <li>Exclusive Athlete Branding</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="style-card">
+                <div class="style-img-box">
+                    <span class="style-tag collab">Cute Series</span>
+                    <img src="dog.png" alt="Maltese Collaboration Edition">
+                </div>
+                <div class="style-info">
+                    <h3>Playful & Organized</h3>
+                    <p>Featuring the adorable Maltese line art. Perfect for adding a touch of joy to your daily lists.</p>
+                    <ul class="style-features">
+                        <li>Adorable Line Art Design</li>
+                        <li>Pastel Color Palette</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="style-card">
+                <div class="style-img-box">
+                    <span class="style-tag">Classic</span>
+                    <img src="classic.png" alt="Classic Multi-color Series">
+                </div>
+                <div class="style-info">
+                    <h3>Your Daily Companion</h3>
+                    <p>Available in Olive, Navy, White, and Pink. The versatile choice for everyone.</p>
+                    <ul class="style-features">
+                        <li>4 Versatile Colorways</li>
+                        <li>Durable Vegan Leather</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="customization-banner">
+            <h4>✨ Make It Truly Yours</h4>
+            <p>Every NoteSnap Pro supports <strong>custom laser engraving</strong> (up to 15 characters). <br>Add your name, a motivational quote, or your team logo.</p>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section fade-in">
+        <h2 class="section-title">Write. Wipe. Rewrite.</h2>
+        <p class="section-subtitle">Experience the premium aluminum surface. <br>Left: Product Components. Right: Try it yourself!</p>
+        <div class="demo-container">
+            <div class="demo-real-img">
+                <img src="demo.png" alt="NoteSnap Pro Components">
+            </div>
+            <div class="canvas-area">
+                <div class="canvas-wrapper">
+                    <canvas id="writeCanvas" width="300" height="400"></canvas>
+                </div>
+                <button class="btn-wipe" onclick="clearCanvas()">Wipe Clean (Erase)</button>
+                <p style="font-size: 0.9rem; color: #888; margin-top: 15px;">* Use your mouse or finger to draw on the gold surface.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Data -->
+    <section class="market-section fade-in">
+        <h2 class="section-title">Validated by You.</h2>
+        <p class="section-subtitle">Our survey validated our direction emphatically.</p>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number">66.67%</div><div>Minimalist Desire</div><p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Want to carry only their smartphone.</p></div>
+            <div class="stat-card"><div class="stat-number">69.70%</div><div>Rated Innovative</div><p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Respondents rated our design as innovative.</p></div>
+            <div class="stat-card"><div class="stat-number">0</div><div>Direct Competitors</div><p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Notebooks are bulky. MagSafe wallets can't write.</p></div>
+        </div>
+    </section>
+
+    <!-- Rewards Section (4 Tiers) -->
+    <section id="rewards" class="rewards-section fade-in">
+        <h2 class="section-title">Choose Your Reward</h2>
+        <p class="section-subtitle">Four tiers designed to maximize accessibility. Lower the barrier, reward the earliest supporters.</p>
+        
+        <div class="reward-cards">
+            <!-- Tier 1: Early Bird -->
+            <div class="reward-card" onclick="selectReward(this, 'Tier 1 - Early Bird Special', '$15 / ￥108')">
+                <div class="reward-badge">Limited - First 100 Only</div>
+                <div class="reward-tier">Tier 1 — Early Bird Special</div>
+                <div class="reward-price">$15 <span style="font-size: 1rem; color: #666;">/ ￥108</span></div>
+                <div class="reward-price-note">The lowest price we will ever offer</div>
+                <ul class="reward-features">
+                    <li>One NoteSnap Pro unit</li>
+                    <li>Strictly limited to first 100 backers</li>
+                    <li>Built for budget-conscious students</li>
+                </ul>
+                <button class="btn-select">Select Tier</button>
+            </div>
+
+            <!-- Tier 2: Standard Pack -->
+            <div class="reward-card" onclick="selectReward(this, 'Tier 2 - Standard Pack', '$25 / ￥180')">
+                <div class="reward-tier">Tier 2 — Standard Pack</div>
+                <div class="reward-price">$25 <span style="font-size: 1rem; color: #666;">/ ￥180</span></div>
+                <div class="reward-price-note">Most popular choice</div>
+                <ul class="reward-features">
+                    <li>One NoteSnap Pro unit</li>
+                    <li>Choice of three premium colors</li>
+                    <li>Branded canvas pouch included</li>
+                    <li>Exclusive sticker set</li>
+                </ul>
+                <button class="btn-select">Select Tier</button>
+            </div>
+
+            <!-- Tier 3: Duo Pack -->
+            <div class="reward-card" onclick="selectReward(this, 'Tier 3 - Duo Pack', '$35 / ￥252')">
+                <div class="reward-tier">Tier 3 — Duo Pack</div>
+                <div class="reward-price">$35 <span style="font-size: 1rem; color: #666;">/ ￥252</span></div>
+                <div class="reward-price-note">Just $17.50 per unit</div>
+                <ul class="reward-features">
+                    <li>Two full NoteSnap Pro units</li>
+                    <li>Perfect for study partners</li>
+                    <li>Includes replacement metal writing panel</li>
+                </ul>
+                <button class="btn-select">Select Tier</button>
+            </div>
+
+            <!-- Tier 4: Team Pack -->
+            <div class="reward-card" onclick="selectReward(this, 'Tier 4 - Team Pack', '$45 / ￥324')">
+                <div class="reward-tier">Tier 4 — Team Pack</div>
+                <div class="reward-price">$45 <span style="font-size: 1rem; color: #666;">/ ￥324</span></div>
+                <div class="reward-price-note">Best value for teams</div>
+                <ul class="reward-features">
+                    <li>Three custom-color units</li>
+                    <li>Individual laser engraving (up to 15 chars)</li>
+                    <li>Priority Backer Status for future releases</li>
+                </ul>
+                <button class="btn-select">Select Tier</button>
+            </div>
+        </div>
+
+        <div class="shipping-note">
+            <p> <strong>Free worldwide shipping</strong> is included on every single tier, with no exceptions.</p>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section fade-in">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Everything you need to know about NoteSnap Pro</p>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>When will NoteSnap Pro ship?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We plan to ship all rewards within 3 months after the crowdfunding campaign ends. You'll receive tracking information via email.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Is the metal surface really erasable?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! The premium aluminum surface allows infinite write-wipe-rewrite cycles. Use the included eraser or any soft cloth to wipe clean instantly.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Does it work with all phones?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>NoteSnap Pro uses ultra-strong MagSafe technology and works with all MagSafe-compatible phones (iPhone 12 and later). For other phones, we include an adhesive adapter.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What colors are available?</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>We offer 3 colorway series: Classic Black, Midnight Blue, and Rose Gold. Team Pack backers can choose custom colors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+        <!-- Footer -->
+    <footer>
+        <div class="footer-logo">Tri-Pen Alliance</div>
+        <p>NoteSnap Pro: Carry less. Stay organized. Remember more.</p>
+        <div class="contact-info">
+            <p>For more information or to stay connected with our journey:</p>
+            <p><a href="mailto:notesnappro@gmail.com">notesnappro@gmail.com</a></p>
+        </div>
+        <!-- 这里已经改为 2026 -->
+        <p style="margin-top: 40px; font-size: 0.8rem; color: #555;">© 2026 Tri-Pen Alliance. All rights reserved.</p>
+    </footer>
+
+
+    <!-- Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <h3>Confirm Your Selection</h3>
+            <p id="modalText">You selected Tier 1 - Early Bird Special at $15</p>
+            <div class="modal-buttons">
+                <button class="btn-modal btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-modal btn-confirm" onclick="confirmSelection()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Scroll Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Canvas Logic
+        const canvas = document.getElementById('writeCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        ctx.strokeStyle = '#222'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+        function startDraw(e) { isDrawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); e.preventDefault(); }
+        function draw(e) { if (!isDrawing) return; const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); }
+        function stopDraw() { isDrawing = false; }
+
+        canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('mouseout', stopDraw);
+        canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDraw);
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const btn = document.querySelector('.btn-wipe');
+            btn.innerText = "Wiped! ";
+            setTimeout(() => btn.innerText = "Wipe Clean (Erase)", 1000);
+        }
+
+        // Reward Selection
+        let selectedReward = null;
+        function selectReward(card, tierName, price) {
+            document.querySelectorAll('.reward-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedReward = { tier: tierName, price: price };
+            document.getElementById('modalText').innerText = `You selected ${tierName} at ${price}. Confirm your backing?`;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        function closeModal() { document.getElementById('confirmModal').classList.remove('active'); }
+        function confirmSelection() {
+            if (selectedReward) {
+                alert(`Thank you for backing NoteSnap Pro!\n\nSelected: ${selectedReward.tier}\nPrice: ${selectedReward.price}\n\nWe'll send you an email with next steps.`);
+                closeModal();
+            }
+        }
+        document.getElementById('confirmModal').addEventListener('click', (e) => { if (e.target === document.getElementById('confirmModal')) closeModal(); });
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+            if (!isActive) faqItem.classList.add('active');
+        }
+    </script>
+</body>
+</html>
